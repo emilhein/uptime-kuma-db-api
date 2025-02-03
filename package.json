@@ -1,0 +1,26 @@
+{
+    "name": "uptime-kuma-db",
+    "version": "1.0.0",
+    "description": "Unofficial Uptime Kuma database client",
+    "main": "src/index.js",
+    "scripts": {
+      "test": "jest --setupFiles dotenv/config",
+      "lint": "eslint src/ test/",
+      "start:db": "docker-compose up -d",
+      "stop:db": "docker-compose down"
+    },
+    "dependencies": {
+      "mysql2": "^3.9.7"
+    },
+    "devDependencies": {
+      "jest": "^29.7.0",
+      "dotenv": "^16.3.1",
+      "eslint": "^9.2.0",
+      "docker-compose": "1.1.0"
+    },
+    "keywords": [
+      "uptime-kuma",
+      "monitoring",
+      "database"
+    ]
+  }
