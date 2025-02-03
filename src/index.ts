@@ -1,8 +1,12 @@
 const mysql = require('mysql2');
+// @ts-ignore
+
 const crypto = require('crypto');
 
 class UptimeKumaDB {
-  constructor(config) {
+  pool: any;
+  config: any;
+  constructor(config: any) {
     this.config = config;
     this.pool = mysql.createPool(config).promise();
   }
@@ -17,13 +21,14 @@ class UptimeKumaDB {
     }
   }
 
-  async createMonitor(params) {
+  async createMonitor(params: { name: any; push_token: any; }) {
     // Validate required parameters
     if (!params.name || typeof params.name !== 'string') {
       throw new Error('Invalid name');
     }
 
     // Generate a random push token if not provided
+    // @ts-ignore
     params.push_token = params.push_token || crypto.randomBytes(16).toString('hex');
 
     // Set default values for optional fields if not provided
@@ -125,7 +130,7 @@ class UptimeKumaDB {
     }
   }
 
-  async deleteMonitor(id) {
+  async deleteMonitor(id: number) {
     const connection = await this.pool.getConnection();
     try {
       const query = `DELETE FROM monitor WHERE id = ?`;
@@ -136,7 +141,7 @@ class UptimeKumaDB {
     }
   }
 
-  async startMonitor(id) {
+  async startMonitor(id: number) {
     const connection = await this.pool.getConnection();
     try {
       const query = `UPDATE monitor SET active = 1 WHERE id = ?`;
@@ -147,7 +152,7 @@ class UptimeKumaDB {
     }
   }
 
-  async pauseMonitor(id) {
+  async pauseMonitor(id: number) {
     const connection = await this.pool.getConnection();
     try {
       const query = `UPDATE monitor SET active = 0 WHERE id = ?`;
