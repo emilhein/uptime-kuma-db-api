@@ -20,6 +20,62 @@ class UptimeKumaDB {
       connection.release();
     }
   }
+  async getMonitor(id: number) {
+    const connection = await this.pool.getConnection();
+    try {
+      const [rows] = await connection.query(`SELECT * FROM monitor WHERE id = ${id}`);
+
+
+      return rows;
+    } finally {
+      connection.release();
+    }
+  }
+
+  async createMonitorNotificationAssositation(params: { monitor_id: number, notification_id: number }) {
+    if (!params.monitor_id || !params.notification_id) {
+      throw new Error('Missing notification and/or monitorid');
+    }
+    const connection = await this.pool.getConnection();
+    try {
+      const query = `INSERT INTO monitor_notification SET ?`;
+      const [result] = await connection.query(query, params);
+      return { id: result.insertId, ...params };
+    } finally {
+      connection.release();
+    }
+  }
+  async createMonitorTagAssositation(params: { monitor_id: number, tag_id: number, value: string }) {
+    if (!params.monitor_id || !params.tag_id) {
+      throw new Error('Missing tag and/or monitorid');
+    }
+    const defaultValues = { value: '' };
+    const finalParams = { ...defaultValues, ...params };
+    const connection = await this.pool.getConnection();
+    try {
+      const query = `INSERT INTO monitor_tag SET ?`;
+      const [result] = await connection.query(query, finalParams);
+      return { id: result.insertId, ...finalParams };
+    } finally {
+      connection.release();
+    }
+  }
+  async createTag(params: { name: string }) {
+    if (!params.name || typeof params.name !== 'string') {
+      throw new Error('Invalid name');
+    }
+
+    const defaultValues = { color: '#2563EB' };
+    const finalParams = { ...defaultValues, ...params };
+    const connection = await this.pool.getConnection();
+    try {
+      const query = `INSERT INTO tag SET ?`;
+      const [result] = await connection.query(query, finalParams);
+      return { id: result.insertId, ...finalParams };
+    } finally {
+      connection.release();
+    }
+  }
 
   async createMonitor(params: { name: any; push_token: any; }) {
     // Validate required parameters
