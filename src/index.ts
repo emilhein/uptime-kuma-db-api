@@ -221,12 +221,12 @@ class UptimeKumaDB {
   async customQuery(query: string) {
     const connection = await this.pool.getConnection();
     try {
-        const [result] = await connection.execute(query);
-        return result.affectedRows > 0;
+      const [rows] = await connection.query(query);
+      return rows
     } finally {
-        connection.release();
+      connection.release();
     }
-}
+  }
 
   async close() {
     await this.pool.end();
